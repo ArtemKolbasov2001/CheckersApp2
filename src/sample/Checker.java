@@ -8,14 +8,24 @@ import static sample.Main.BOARD_SIZE;
 public class Checker extends StackPane {
     private CheckerType type;
 
+    private double mouseX, mouseY;
+    private double oldX, oldY;
+
     public CheckerType getType() {
         return type;
+    }
+
+    public double getOldX(){
+        return oldX;
+    }
+    public double getOldY(){
+        return oldY;
     }
 
 
     public Checker(CheckerType type, int x, int y) {
         this.type = type;
-        relocate(x* BOARD_SIZE, y * BOARD_SIZE);
+        move(x, y);
 
         Ellipse bg = new Ellipse(BOARD_SIZE * 0.3125, BOARD_SIZE * 0.26);
         bg.setFill(Color.BLACK);
@@ -38,6 +48,25 @@ public class Checker extends StackPane {
 
         getChildren().addAll(bg, ellipse);
 
+        setOnMousePressed(e -> {
+            mouseX = e.getSceneX();
+            mouseY = e.getSceneY();
+        });
+
+        setOnMouseDragged(e->{
+            relocate(e.getSceneX() - mouseX + oldX, e.getSceneY() - mouseY + oldY);
+        });
+
 
     }
+    public void move(int x, int y){
+        oldX = x * BOARD_SIZE;
+        oldY = y * BOARD_SIZE;
+        relocate(oldX, oldY);
+    }
+    public void abortMove(){
+        relocate(oldX, oldY);
+    }
+
 }
+
